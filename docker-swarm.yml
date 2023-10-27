@@ -1,0 +1,25 @@
+---
+version: "3.8"
+networks:
+  net:
+    name: test
+
+services:
+  fpm:
+    image: php:8-fpm
+    deploy:
+      replicas: 3
+    volumes:
+      - ./data:/var/www/html
+    networks: [net]
+
+  nginx:
+    image: nginx
+    deploy:
+      replicas: 1
+    volumes:
+      - ./nginx/test.conf:/etc/nginx/conf.d/default.conf
+      - ./data:/var/www/html
+    ports:
+      - {target: 80, published: 80, protocol: tcp, mode: host}
+    networks: [net]
